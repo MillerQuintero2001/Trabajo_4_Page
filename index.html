@@ -7537,6 +7537,8 @@ Stiven Julio Doval</p>
 <p><strong>Universidad Nacional de Colombia, Sede Medellín</strong></p>
 <p><em><strong>Julio 23 del 2025</strong></em></p>
 <p><strong>Enlace a repositorio GitHub:</strong> <a href="https://github.com/Straver00/RNA_2025-1">https://github.com/Straver00/RNA_2025-1</a></p>
+<p><strong>App web del generador de Historias:</strong> <a href="https://story-generator-qc5z.onrender.com/">https://story-generator-qc5z.onrender.com/</a></p>
+<p><strong>Vídeo demostración (10 mins, 3 historias)</strong> <a href="https://youtu.be/LzbSV2GT7Js">https://youtu.be/LzbSV2GT7Js</a></p>
 </center>
 <br/>
 <hr/>
@@ -7568,7 +7570,7 @@ Stiven Julio Doval</p>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h1 id="Introducci%C3%B3n">Introducción<a class="anchor-link" href="#Introducci%C3%B3n">¶</a></h1><p>Los Grandes Modelos de Lenguaje (LLMs) han transformado la inteligencia artificial, especialmente en dominios creativos como la escritura narrativa. Esta aplicación ofrece una oportunidad valiosa para comprender el prompt engineering, el uso de SDKs de LLMs y reflexionar sobre su impacto social. Esto por medio del desarrollo de un agente inteligente especializado en generación colaborativa de historias, explorando nuevas posibilidades de colaboración humano-máquina en procesos creativos que históricamente han sido exclusivos del ser humano.</p>
-<p>El reporte documenta el desarrollo completo del agente creativo: desde la conceptualización hasta la implementación final, incluyendo decisiones arquitectónicas, estrategias de prompt engineering, desafíos técnicos y soluciones implementadas.</p>
+<p>El reporte documenta el desarrollo completo del generador de historias LLM creativo: desde la conceptualización hasta la implementación final, incluyendo decisiones arquitectónicas, estrategias de prompt engineering, desafíos técnicos y soluciones implementadas.</p>
 </div>
 </div>
 </div>
@@ -7579,7 +7581,7 @@ Stiven Julio Doval</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Motor-de-Generaci%C3%B3n-de-Historias">Motor de Generación de Historias<a class="anchor-link" href="#Motor-de-Generaci%C3%B3n-de-Historias">¶</a></h1><p>El modelo seleccionado para esta tarea es <strong>Gemini 2.5 Flash</strong> para la generación de texto, y por cuestiones de capacidades dispuestas por Google, para las imágenes se emplea otro modelo de Gemini que si cuenta con la capacidad de generación de imágenes en su capa gratuita, el cuál es el de <strong>Gemini 2.0 Flash Preview Image Generation</strong>. Todo el uso de los modelos se hace por medio de solicitudes a la API dispuesta por Google. Se selecciono esta en particular por su generosa capa gratuita y límites de frecuencia por API Key. Que siguien los siguientes límites acorde a la documentación <a href="https://ai.google.dev/gemini-api/docs?hl=es-419">Gemini API</a>:</p>
+<h1 id="Motor-de-Generaci%C3%B3n-de-Historias">Motor de Generación de Historias<a class="anchor-link" href="#Motor-de-Generaci%C3%B3n-de-Historias">¶</a></h1><p>El modelo seleccionado para esta tarea es <strong>Gemini 2.5 Flash</strong> para la generación de texto; luego por cuestiones de capacidades dispuestas por Google en capa gratuita, para las imágenes se emplea otro modelo de Gemini que si cuenta con la capacidad de generación de imágenes en su capa gratuita, el cuál es el de <strong>Gemini 2.0 Flash Preview Image Generation</strong>. Todo el uso de los modelos se hace por medio de solicitudes a la API dispuesta por Google. Se selecciono esta en particular por su generosa capa gratuita y límites de frecuencia por API Key. Que siguen los siguientes límites acorde a la documentación <a href="https://ai.google.dev/gemini-api/docs?hl=es-419">Gemini API</a>:</p>
 <table>
 <thead>
 <tr>
@@ -7614,15 +7616,16 @@ Stiven Julio Doval</p>
 </li>
 </ul>
 <h2 id="Estrategia-de-Carga-Distribuida">Estrategia de Carga Distribuida<a class="anchor-link" href="#Estrategia-de-Carga-Distribuida">¶</a></h2><p>Si bien, tal y como Google lo provee por medio de sus SDK con la librería Google-GenAI, es posible cambiar constantemente de modelo usando el mismo cliente y API Key; para no saturar los límites y ofrecer mayor disponilidad, se distribuye la carga de generación de texto e imágenes, utlizando una API key diferente para cada tarea, es decir se emplea una API key para el cliente de generación de texto, y otra API key para la generación de imágenes.</p>
-<h2 id="Filtros-y-Seguridad">Filtros y Seguridad<a class="anchor-link" href="#Filtros-y-Seguridad">¶</a></h2><p>Para evitar respuesta inadecuadas o lenguaje inapropiado que incite al odio, se activaron los safety settings que ofrece Google, activando entonces todos los filtros disponibles que incluyen:</p>
+<h2 id="Filtros-y-Seguridad">Filtros y Seguridad<a class="anchor-link" href="#Filtros-y-Seguridad">¶</a></h2><p>Para evitar respuesta inadecuadas o lenguaje inapropiado que incite al odio, se activaron los safety settings en el código de la SDK que ofrece Google, activando entonces todos los filtros disponibles que incluyen:</p>
 <ul>
 <li>Acoso.</li>
 <li>Lenguaje que incita al odio.</li>
 <li>Bloqueo de contenido explicitamente sexual.</li>
 <li>Contenido peligroso.</li>
 </ul>
-<p>Con esto se garantiza entonces que el LLM que funge como cerebro de la arquitectura, no emita resultados indeseados, inadecuados o polémicos, de forma natural o forzada por prompt injection.</p>
-<h2 id="Intenci%C3%B3n-de-maximizar-la-reproducibilidad">Intención de maximizar la reproducibilidad<a class="anchor-link" href="#Intenci%C3%B3n-de-maximizar-la-reproducibilidad">¶</a></h2><p>Para cualquier persona que haya experimentado antes con grandes modelos de lenguaje, le es fácil notar que obtener una respuesta 100% igual ante la misma entrada/estímulo, es complejo. Para maximizar la reproduccibilidad de las historias, se fijó la semilla de la función generadora de contenido en un valor de 42. Además otro factor clave en el tema de reprocubilidad es el parámetro de <strong>temperature</strong> el cuál para tener un punto medio entre creatividad en historias y reprocubilidad, se dejo fijada a un valor medio de alrededor de 0.5, con esto se tiene un trade-off, considerando que particularmente para generar historias una temperature de 0.0 le resta capacidad creativa al contenido generado. Por otro lado, una temperature muy alta puede dar una respuesta muy volátil, y hace tender el modelo IA a incongruencias o alucinaciones en su narrativa mucho más fácilmente.</p>
+<p>Con esto se garantiza entonces que el LLM que funge como cerebro de la arquitectura, no emita resultados indeseados, inadecuados o polémicos, de forma natural o forzada.</p>
+<h2 id="Intenci%C3%B3n-de-maximizar-la-reproducibilidad">Intención de maximizar la reproducibilidad<a class="anchor-link" href="#Intenci%C3%B3n-de-maximizar-la-reproducibilidad">¶</a></h2><p>Para cualquier persona que haya experimentado antes con grandes modelos de lenguaje, le es fácil notar que obtener una respuesta 100% igual ante la misma entrada/estímulo, es complejo. Para maximizar la reproduccibilidad de las historias, se fijó la semilla de la función generadora de contenido en un valor de 42. Además otro factor clave en el tema de reprocubilidad es el parámetro de <strong>temperature</strong> el cuál para tener un punto medio entre creatividad en historias y reprocubilidad, se dejo fijada a un valor medio de alrededor de 0.5, con esto se tiene un trade-off, considerando que particularmente para generar historias una temperature de 0.0 le resta capacidad creativa al contenido generado. Por otro lado, una temperature muy alta puede dar una respuesta muy volátil, y hace tender el modelo IA a incongruencias o alucinaciones en su narrativa mucho más fácilmente.
+Aún con todo esto, la reproducilidad del 100% no se garantiza, pero se aproxima bien.</p>
 </div>
 </div>
 </div>
@@ -7725,7 +7728,7 @@ Esta opción está diseñada para usuarios que prefieren una experiencia guiada 
   </i>
 </center>
 <br/>
-<p>Historia generada con imagen incluida:</p>
+<p>Historia generada con imagen incluida (fantasía-comedia):</p>
 <br/>
 <center>
 <img alt="No description has been provided for this image" src="images_report_4/story.png" style="max-width: 100%; height: auto;"/>
@@ -7742,13 +7745,76 @@ Esta opción está diseñada para usuarios que prefieren una experiencia guiada 
   </i>
 </center>
 <br/>
-<p>Historia generada con imagen:</p>
+<p>Historia generada con imagen (acción):</p>
 <br/>
 <center>
 <img alt="No description has been provided for this image" src="images_report_4/Historias_IA_Prompt2.png" style="max-width: 100%; height: auto;"/>
 <br/>
 <i style="display: block; margin-top: 8px;">
     Fig 4. Historia Generada con entrada de texto libre
+  </i>
+</center>
+<br/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Otros-Ejemplos-Diversos">Otros Ejemplos Diversos<a class="anchor-link" href="#Otros-Ejemplos-Diversos">¶</a></h2><p>Historia generada sobre romance, indicando como personajes 'Andres', 'Juliana', en un escenario de bar-café con un tono caprichoso, y de longitud media:</p>
+<br/>
+<center>
+<img alt="No description has been provided for this image" src="images_report_4/Historia_Generada_3.png" style="max-width: 100%; height: auto;"/>
+<br/>
+<i style="display: block; margin-top: 8px;">
+    Fig 5. Historia Generada sobre romance
+  </i>
+</center>
+<br/>
+<p>Historia generada sobre terror:</p>
+<br/>
+<center>
+<img alt="No description has been provided for this image" src="images_report_4/Historia_Prompt_4.png" style="max-width: 100%; height: auto;"/>
+<br/>
+<i style="display: block; margin-top: 8px;">
+    Fig 6. Entrada para historia de terror
+  </i>
+</center>
+<br/>
+<ul>
+<li>Salida (texto parcialmente recortado por longitud):</li>
+</ul>
+<br/>
+<center>
+<img alt="No description has been provided for this image" src="images_report_4/Historia_Terror_4.png" style="max-width: 100%; height: auto;"/>
+<br/>
+<i style="display: block; margin-top: 8px;">
+    Fig 7. Historia de terror
+  </i>
+</center>
+<br/>
+<p><strong>Última de las 5 historias de ejemplo</strong>:
+<br/></p>
+<center>
+<img alt="No description has been provided for this image" src="images_report_4/Historias_IA_Prompt5.png" style="max-width: 100%; height: auto;"/>
+<br/>
+<i style="display: block; margin-top: 8px;">
+    Fig 8. Input historia de aventura
+  </i>
+</center>
+<br/>
+<ul>
+<li>Salida e imagen:</li>
+</ul>
+<center>
+<img alt="No description has been provided for this image" src="images_report_4/Historias_IA_Content5.png" style="max-width: 100%; height: auto;"/>
+<br/>
+<i style="display: block; margin-top: 8px;">
+    Fig 7. Historia de terror
   </i>
 </center>
 <br/>
@@ -7766,7 +7832,7 @@ Esta opción está diseñada para usuarios que prefieren una experiencia guiada 
 <h1 id="Conclusiones-y-Recomendaciones">Conclusiones y Recomendaciones<a class="anchor-link" href="#Conclusiones-y-Recomendaciones">¶</a></h1><ul>
 <li><p>El desarrollo de un agente creativo basado en Grandes Modelos de Lenguaje (LLMs) ha demostrado ser una experiencia enriquecedora tanto desde el punto de vista técnico como conceptual. Este proyecto permitió explorar el potencial de los modelos generativos en la narrativa, destacando su capacidad para colaborar con humanos en la producción de contenido original y coherente.</p>
 </li>
-<li><p>Desde el punto de vista técnico, la naturaleza probabilística de los LLMs —que produce resultados distintos ante entradas similares— contrasta con el enfoque determinista tradicional de la programación. Esta dicotomía fue gestionada mediante una arquitectura modular que impone estructuras claras sobre las que el modelo puede operar creativamente, y el uso de prompts cuidadosamente diseñados que actúan como guías narrativas. Así, el comportamiento del sistema mantiene una base algo predecible mientras conserva espacio para la innovación y variación creativa.</p>
+<li><p>Desde el punto de vista técnico, la naturaleza probabilística de los LLMs —que produce resultados distintos ante entradas similares— contrasta con el enfoque determinista tradicional de la programación. Esta dicotomía fue gestionada mediante una arquitectura modular que impone estructuras claras sobre las que el modelo puede operar creativamente, y el uso de prompts cuidadosamente diseñados que actúan como guías narrativas. Así, el comportamiento del sistema mantiene una base un poco predecible, mientras conserva espacio para la innovación y variación creativa.</p>
 </li>
 <li><p>En cuanto a la ingeniería de prompts, se observó una diferencia fundamental entre tareas factuales y tareas creativas. Mientras las primeras requieren precisión y brevedad, las tareas creativas exigen flexibilidad, riqueza descriptiva y un tono inspirador. Esto implicó diseñar prompts no solo informativos, sino también evocativos, capaces de establecer atmósferas y estilos sin limitar excesivamente al modelo. El reto fue equilibrar estructura y libertad, logrando historias coherentes sin perder originalidad.</p>
 </li>
